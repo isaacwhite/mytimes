@@ -1,0 +1,184 @@
+<?php
+
+// }
+/*HOOKS*/
+
+// function mytimes_core_init() {
+//   // $url = "http://api.nytimes.com/svc/news/v3/content/nyt/all?";
+//   // $api_string = "api-key=070cd311de7c5d235e85830bae85cb22:14:56579220";
+//   // $request_path = $url . $api_string;
+
+//   // $returned_json = file_get_contents($request_path);
+//   // $results = drupal_json_decode($returned_json);
+//   // // dpm($request_path);
+//   // dpm($results);
+// }
+/**
+ * Implements hook menu
+ * Provides two json endpoints :D
+ */
+// function mytimes_core_menu() {
+//   $items['set/%'] = array(
+//     'page callback' => 'rheo_core_set_data',
+//     'page arguments' => array(1),
+//     'access arguments' => array('access content')
+//   );
+//   return $items;
+// }
+
+function mytimes_core_cronapi($op,$job = NULL) {
+  $items['mytimes_core_update_articles'] = array(
+      'description' => 'Cron job to update articles on the site every minute',
+      'rule' => '* * * * *',//change me to all asterisks later
+      'callback' => 'mytimes_core_create_articles',
+      'arguments' => array('0')//this is unnecessary, but whatever
+    );
+  return $items;
+}
+
+function mytimes_core_create_articles($argument) {
+  //get article data
+  $url = "http://api.nytimes.com/svc/news/v3/content/nyt/all?";
+  $api_string = "api-key=070cd311de7c5d235e85830bae85cb22:14:56579220";
+  $request_path = $url . $api_string;
+  $returned_json = file_get_contents($request_path);
+  $results = drupal_json_decode($returned_json);
+  // dpm($results);
+
+  //loop over the results
+  foreach($results['results'] as $result) {
+    //make sure these are zeroed out at the beginning of each loop.
+    $superJumbo = NULL;
+    $basicLarge = NULL;
+    $thumbLarge = NULL;
+    $multimedia = $result['multimedia'];
+    //set up images, if the article has them.
+    //process date object
+    $dateObj = new DateTime(date($result['updated_date']));
+    $title = $result['title'];
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type','node')
+        ->entityCondition('bundle','article')
+        ->propertyCondition('title',$title);
+        // ->fieldCondition('field_date_published','value',$dateObj->getTimestamp(),'=');
+    $query_result = $query->execute();
+    if(empty($query_result)) {
+      //go for it.
+      if(!empty($multimedia)) {
+        $image_path = $multimedia[0]['url'];
+        $components = explode("/",$image_path);
+        $length = count($components);
+        $index = $length - 2;
+        $base_name = $components[$index];
+        $calc_path = "http://";
+        for($i = 2; $i < count($components) - 1; $i++) {
+          $calc_path .= $components[$i] . "/";
+        }
+        $superJumbo = $calc_path . $base_name . "-superJumbo.jpg";
+        $basicLarge = $calc_path . $base_name . "-sfSpan.jpg";
+        $thumbLarge = $calc_path . $base_name . "-thumbLarge.jpg";
+      }
+      $values = array(
+        'type' => 'article',
+        'uid' => 1,
+        'status' => 1,
+        'comment' => 0,
+        'promote' => 0,
+      );
+      $entity = entity_create('node', $values);
+      $wrapper = entity_metadata_wrapper('node', $entity);
+      dpm($result);
+      //preprocess tids
+      $section_tid = mytimes_core_get_term('section',$result['section']);
+      $subsection_tid = mytimes_core_get_term('subsection',$result['subsection']);
+      $des_tids = mytimes_core_get_term('des_facet',$result['des_facet']);
+      $org_tids = mytimes_core_get_term('org_facet',$result['org_facet']);
+      $per_tids = mytimes_core_get_term('per_facet',$result['per_facet']);
+      $geo_tids = mytimes_core_get_term('geo_facet',$result['geo_facet']);
+      if(isset($result['blog_name'])) {
+        $blog_tid = mytimes_core_get_term('blog_name',$result['blog_name']);
+        $wrapper->field_blog_name->set($blog_tid);
+      }
+      $item_tid = mytimes_core_get_term('item_type',$result['item_type']);
+      $material_tid = mytimes_core_get_term('material_type_facet',$result['material_type_facet']);
+      
+      //set values on the wrapper
+      $wrapper->field_section->set($section_tid);
+      $wrapper->field_subsection->set($subsection_tid);
+      $wrapper->title->set($result['title']);
+      $wrapper->body->set(array('value' => $result['abstract']));
+      $wrapper->field_author->set($result['byline']);
+      $wrapper->field_source_url->set($result['url']);
+      $wrapper->field_subheadline->set($result['subheadline']);
+      $wrapper->field_item_type->set($item_tid);
+      $wrapper->field_material_type_facet->set($material_tid);
+      $wrapper->field_kicker->set($result['kicker']);
+      $wrapper->field_des_facet->set($des_tids);
+      $wrapper->field_org_facet->set($org_tids);
+      $wrapper->field_per_facet->set($per_tids);
+      $wrapper->field_geo_facet->set($geo_tids);
+      if(isset($superJumbo)) {
+        $wrapper->field_thumbnail_path->set($thumbLarge);
+        $wrapper->field_jumbo_path->set($superJumbo);
+        $wrapper->field_large_path->set($basicLarge);
+        $wrapper->field_date_published->set($dateObj->getTimestamp());
+        //we have an image
+      } else {
+        //we don't :(
+        //no other actions now.
+      }
+      $wrapper->save();
+    } else {
+      dpm($query_result);//let's see what we got.
+    }
+  }
+  //create the nodes
+}
+
+function mytimes_core_get_term($vocabulary,$term_name) {
+  if($term_name != "") {
+    if(!is_array($term_name)) {
+      return mytimes_core_get_single_term($vocabulary,$term_name);
+    } else {
+      $tids = array();
+      foreach($term_name as $term) {
+        $tids[] = mytimes_core_get_single_term($vocabulary,$term);
+      }
+      return $tids;
+    }
+  } else {
+    return NULL;
+  }
+}
+
+function mytimes_core_get_single_term($vocabulary,$term_name) {
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type','taxonomy_term')
+        ->entityCondition('bundle',$vocabulary)
+        ->propertyCondition('name', $term_name);
+  $result = $query->execute();
+  if(empty($result)) {
+    $vid = taxonomy_vocabulary_machine_name_load($vocabulary)->vid;
+    $term = new stdClass();
+    $term->name = $term_name;
+    $term->vid = $vid;
+    taxonomy_term_save($term);
+    return $term->tid;
+    //we need to make a new taxonomy term and return its tid
+  } else {
+    //return the tid of the first object.
+    foreach($result['taxonomy_term'] as $key=>$term_obj) {
+      //jump out at the first one.
+      return $key;
+    }
+  }
+}
+// function mytimes_core_set_data($request) {
+//   $name = "Access-Control-Allow-Origin";
+//   $value = "http://rheomail.com";
+//   drupal_add_http_header($name, $value, $append = TRUE);
+//   // $client_ip = $_SERVER['REMOTE_ADDR'];
+//   // dpm($client_ip);
+//   //no switch statement
+//   dpm($_POST);
+// }

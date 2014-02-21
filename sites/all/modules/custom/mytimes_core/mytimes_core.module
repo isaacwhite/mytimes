@@ -2,17 +2,12 @@
 
 // }
 /*HOOKS*/
+/**TODO
+-request RSS feed for homepage and cross reference positional information in feed with recent articles to pull out important stories and keep them near the top.
+-lets keep track of which articles have the most views on the site by adding a counter to each article and incrementing it through the endpoint. Probably best to increment these by nid
+-Add a headless return for all article pages if user is not type administrator.
 
-// function mytimes_core_init() {
-//   // $url = "http://api.nytimes.com/svc/news/v3/content/nyt/all?";
-//   // $api_string = "api-key=070cd311de7c5d235e85830bae85cb22:14:56579220";
-//   // $request_path = $url . $api_string;
-
-//   // $returned_json = file_get_contents($request_path);
-//   // $results = drupal_json_decode($returned_json);
-//   // // dpm($request_path);
-//   // dpm($results);
-// }
+*/
 /**
  * Implements hook menu
  * Provides two json endpoints :D
@@ -25,6 +20,17 @@
 //   );
 //   return $items;
 // }
+
+// function mytimes_core_set_data($request) {
+//   $name = "Access-Control-Allow-Origin";
+//   $value = "http://rheomail.com";
+//   drupal_add_http_header($name, $value, $append = TRUE);
+//   // $client_ip = $_SERVER['REMOTE_ADDR'];
+//   // dpm($client_ip);
+//   //no switch statement
+//   dpm($_POST);
+// }
+
 
 function mytimes_core_cronapi($op,$job = NULL) {
   $items['mytimes_core_update_articles'] = array(
@@ -135,6 +141,8 @@ function mytimes_core_create_articles($argument) {
   //create the nodes
 }
 
+//this function is pretty good.
+//returns tid(s) for requested term name(s) in a vocabulary set
 function mytimes_core_get_term($vocabulary,$term_name) {
   if($term_name != "") {
     if(!is_array($term_name)) {
@@ -151,6 +159,7 @@ function mytimes_core_get_term($vocabulary,$term_name) {
   }
 }
 
+//function to get term tids if they exist, or create them if they do not.
 function mytimes_core_get_single_term($vocabulary,$term_name) {
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type','taxonomy_term')
@@ -158,27 +167,17 @@ function mytimes_core_get_single_term($vocabulary,$term_name) {
         ->propertyCondition('name', $term_name);
   $result = $query->execute();
   if(empty($result)) {
+    //create the term.
     $vid = taxonomy_vocabulary_machine_name_load($vocabulary)->vid;
     $term = new stdClass();
     $term->name = $term_name;
     $term->vid = $vid;
     taxonomy_term_save($term);
     return $term->tid;
-    //we need to make a new taxonomy term and return its tid
   } else {
-    //return the tid of the first object.
     foreach($result['taxonomy_term'] as $key=>$term_obj) {
-      //jump out at the first one.
-      return $key;
+      return $key; //we avoid looping through everything by returning the first tid we found.
     }
   }
 }
-// function mytimes_core_set_data($request) {
-//   $name = "Access-Control-Allow-Origin";
-//   $value = "http://rheomail.com";
-//   drupal_add_http_header($name, $value, $append = TRUE);
-//   // $client_ip = $_SERVER['REMOTE_ADDR'];
-//   // dpm($client_ip);
-//   //no switch statement
-//   dpm($_POST);
-// }
+

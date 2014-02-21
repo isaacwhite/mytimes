@@ -1,0 +1,52 @@
+#main {
+	padding: 0 1rem;
+}
+h4 {
+	@include webfont(gotham,bold,normal);
+	float: left;
+	margin-bottom: 0;
+	font-size: .75rem;
+	&.subsection {
+		margin-left: .5rem;
+		padding-left: .5rem;
+		border-left: 1px solid white * .2;
+	}
+	a {
+		color: black * 1.3;
+	}
+}
+
+h6 {
+	font-size: .75rem;
+	@include webfont(mercury,semibold,normal);
+	margin-top: .75rem;
+	margin-bottom:0;
+}
+
+header {
+	@extend .clearfix;
+}
+
+h2 {
+	margin-top: .5rem;
+	margin-bottom: 0;
+}
+
+article {
+	margin: 0 auto;
+	max-width: 40rem;
+	margin-bottom: 1rem;
+	padding-bottom: .5rem;
+	border-bottom: 1px solid white * .2;
+	@extend .clearfix;
+}
+
+.img-link {
+	width: 30%;
+	float: right;
+	margin-left: 1rem;
+}
+img {
+	width: 100%;
+	height: auto;
+}

@@ -94,11 +94,14 @@ function mytimes_preprocess_entity(&$vars) {
  * @param $vars
  *   An array of variables to pass to the theme template.
  */
-/* -- Delete this line if you want to use this function
+ // -- Delete this line if you want to use this function
 function mytimes_preprocess_node(&$vars) {
   $node = $vars['node'];
+  if ($vars['view_mode'] == 'teaser') {
+    $vars['theme_hook_suggestions'][] = 'node__' . $node->type . '__teaser';
+  }
 }
-// */
+// 
 
 /**
  * Override or insert variables into the field template.
@@ -145,11 +148,11 @@ function mytimes_preprocess_views_view(&$vars) {
  * @param $css
  *   An array of all CSS items being requested on the page.
  */
-/* -- Delete this line if you want to use this function
-function mytimes_css_alter(&$css) {
-
-}
-// */
+ // -- Delete this line if you want to use this function
+// function mytimes_css_alter(&$css) {
+// dpm($css);
+// }
+// 
 
 /**
  * Override or insert javascript on the site.
@@ -162,3 +165,13 @@ function mytimes_js_alter(&$js) {
 
 }
 // */
+
+function mytimes_render_taxonomy($term_obj) {
+  $tid = $term_obj->tid;
+  $calc_path = "taxonomy/term/" . $tid;
+  $path = drupal_lookup_path('alias', $calc_path);
+  $name = $term_obj->name;
+
+  $output = "<a href='" . $path . "'>" . $name . "</a>";
+  return $output;
+}

@@ -3,3 +3,34 @@
 //
 // All of your mixins should go in this file.
 ////////////////////////
+
+@mixin webfont($family,$weight,$italic) {
+	@if $family == gotham  {
+		font-family: 'Gotham SSm A', 'Gotham SSm B', arial, sans-serif;
+	} @else {
+		font-family: 'Mercury SSm A', 'Mercury SSm B', georgia, serif;
+	}
+	@if $weight == extraLight {
+		font-weight: 200;
+	}
+	@if $weight == light {
+		font-weight: 300;
+	}
+	@if $weight == book {
+		font-weight: 400;
+	}
+	@if $weight == medium {
+		font-weight: 500;
+	}
+	@if $weight == semibold {
+		font-weight: 600;
+	}
+	@if $weight == bold {
+		font-weight: 700;
+	}
+	@if $italic == italic {
+		font-style: italic;
+	} @else {
+		font-style: normal;
+	}
+}

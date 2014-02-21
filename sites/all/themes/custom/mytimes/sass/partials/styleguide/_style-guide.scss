@@ -16,4 +16,24 @@
 //  If you'd prefer a soft reset, uncomment `normalize`
 //////////////////////////////
 // @import 'compass/reset';
-// @import 'normalize';
+@import 'normalize';
+h1,h2,h3,h4,h5,h6 {
+	@include webfont(mercury,semibold,italic);
+	a {
+		color: black;
+		text-decoration: none;
+		&:hover {
+			text-decoration: underline;
+			color: white * .1;
+		}
+	}
+}
+
+* {
+	line-height: 1.4;
+}
+
+p {
+	@include webfont(mercury,book,normal);
+	max-width:30em;
+}

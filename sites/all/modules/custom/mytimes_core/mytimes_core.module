@@ -93,7 +93,6 @@ function mytimes_core_create_articles($argument) {
       );
       $entity = entity_create('node', $values);
       $wrapper = entity_metadata_wrapper('node', $entity);
-      dpm($result);
       //preprocess tids
       $section_tid = mytimes_core_get_term('section',$result['section']);
       $subsection_tid = mytimes_core_get_term('subsection',$result['subsection']);
@@ -107,6 +106,16 @@ function mytimes_core_create_articles($argument) {
       }
       $item_tid = mytimes_core_get_term('item_type',$result['item_type']);
       $material_tid = mytimes_core_get_term('material_type_facet',$result['material_type_facet']);
+
+      $socket_update = array(
+        'title' => $result['title'],
+        'url' => $result['url'],
+        'subhead' => $result['subheadline'],
+        'kicker' => $result['kicker'],
+        'datePublished' => $dateObj->getTimestamp()
+      );
+      $socket_subject = "new_post";
+      $socket_update = drupal_json_encode($socket_update);
       
       //set values on the wrapper
       $wrapper->field_section->set($section_tid);
@@ -134,8 +143,9 @@ function mytimes_core_create_articles($argument) {
         //no other actions now.
       }
       $wrapper->save();
+      nodejs_broadcast_message($socket_subject,$socket_update);
     } else {
-      dpm($query_result);//let's see what we got.
+      //don't do anything.
     }
   }
   //create the nodes

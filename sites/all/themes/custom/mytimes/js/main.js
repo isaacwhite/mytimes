@@ -16,7 +16,7 @@
             case "image":
               rs += "<a class='img-link' target='_blank' href='" + path +"'>";
               rs += "<img class='thumbnail' onerror='this.style.display=";
-              rs += "\"none\"' src'" + rendered.normal + "'></a>";
+              rs += "\"none\"' src='" + rendered.normal + "'></a>";
               break;
           }
         } //no else. Keep the blank string. 

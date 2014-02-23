@@ -166,12 +166,4 @@ function mytimes_js_alter(&$js) {
 }
 // */
 
-function mytimes_render_taxonomy($term_obj) {
-  $tid = $term_obj->tid;
-  $calc_path = "taxonomy/term/" . $tid;
-  $path = drupal_lookup_path('alias', $calc_path);
-  $name = $term_obj->name;
 
-  $output = "<a href='" . $path . "'>" . $name . "</a>";
-  return $output;
-}

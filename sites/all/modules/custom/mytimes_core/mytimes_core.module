@@ -115,8 +115,9 @@ function mytimes_core_create_articles($argument) {
   $results = drupal_json_decode($returned_json);
   // dpm($results);
 
+  $oldestFirst = array_reverse($results['results']);
   //loop over the results
-  foreach($results['results'] as $result) {
+  foreach($oldestFirst as $result) {
     //make sure these are zeroed out at the beginning of each loop.
     $superJumbo = NULL;
     $basicLarge = NULL;
@@ -199,6 +200,7 @@ function mytimes_core_create_articles($argument) {
       $wrapper->save();
 
       //take care of socket data.
+      //since we're going backwards through the items, we should encounter older stuff first (we hope)
       $socket_update = mytimes_core_prepare_article_data($wrapper);
       $socket_subject = "new_post";
       $socket_update = drupal_json_encode($socket_update);
@@ -207,6 +209,7 @@ function mytimes_core_create_articles($argument) {
       //don't do anything.
     }
   }
+  //end of loop
   //create the nodes
 }
 

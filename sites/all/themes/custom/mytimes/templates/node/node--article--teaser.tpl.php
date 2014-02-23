@@ -78,57 +78,37 @@
  * @see template_process()
  */
 ?>
-<article id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
-<?php
-//just going to override everything here...
+<?
+//prep values for template
 $wrapper = entity_metadata_wrapper('node',$node);
-// dpm($wrapper->getPropertyInfo());
-$path = $wrapper->field_source_url->value();
-$title = $wrapper->title->value();
-$author = $wrapper->field_author->value();
-$body = $wrapper->body->value()['value'];
-$date = $wrapper->field_date_published->value();
-$thumb = $wrapper->field_thumbnail_path->value();
-$normal = $wrapper->field_large_path->value();
-$large = $wrapper->field_jumbo_path->value();
-$section = $wrapper->field_section->value();
-$subsection = $wrapper->field_subsection->value();
-$image = array();
-if($thumb) {
-  $image['thumb'] = $thumb;
-  $image['normal'] = $normal;
-  $image['large'] = $large;
-  // dpm($image);
-}
+$data = mytimes_core_prepare_article_data($wrapper);
+$section = $data['section']['rendered'];
+$subsection = $data['subsection']['rendered'];
+$path = $data['path'];
+$title = $data['title'];
+$author = $data['author'];
+$image = $data['image'];
+$body = $data['body'];
+$date = $data['date'];
 
-$values = array(
-  'path' => $path,
-  'title' => $title,
-  'author' => $author,
-  'teaser' => $body,
-  'image' => $image,
-  'section' => $section,
-  'subsection' => $subsection,
-);
-// dpm($values);
+//here comes the template...
 ?>
+<article data-nid="<?php print $node->nid;?>" data-updated="<?php print $date;?>">
 <header>
 <?php if($section): ?>
-  <h4 class="section"><?php print mytimes_render_taxonomy($section);?></h4>
+  <h4 class="section"><?php print $section;?></h4>
 <?php endif; if($subsection): ?>
-  <h4 class="subsection"><?php print mytimes_render_taxonomy($subsection); ?></h4>
+  <h4 class="subsection"><?php print $subsection; ?></h4>
 <?php endif; ?>
 </header>
-<h2<?php print $title_attributes; ?>><a target="_blank" href="<?php print $path; ?>" rel="bookmark"><?php print $title; ?></a></h2>
+<h2><a target="_blank" href="<?php print $path; ?>" rel="bookmark"><?php print $title; ?></a></h2>
 <?php if($author): ?>
   <h6><?php print $author ?></h6>
 <?php endif;?>
 <?php if(!empty($image)): ?>
   <a class="img-link" target="_blank" href="<?php print $path; ?>">
-  <img class="thumbnail" onerror="this.style.display='none'" src="<?php print $normal; ?>">
+  <img class="thumbnail" onerror="this.style.display='none'" src="<?php print $image['normal']; ?>">
   </a>
 <?php endif;?>
 <p><?php print $body;?></p>
-
-
 </article>

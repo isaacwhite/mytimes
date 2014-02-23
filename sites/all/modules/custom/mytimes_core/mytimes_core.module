@@ -42,6 +42,70 @@ function mytimes_core_cronapi($op,$job = NULL) {
   return $items;
 }
 
+function mytimes_core_prepare_article_data($wrapper) {
+  if($wrapper->type->value() == "article") {
+    //map the values
+    $nid = $wrapper->nid->value();
+    $path = $wrapper->field_source_url->value();
+    $title = $wrapper->title->value();
+    $author = $wrapper->field_author->value();
+    $body = $wrapper->body->value()['value'];
+    $date = $wrapper->field_date_published->value();
+    $thumb = $wrapper->field_thumbnail_path->value();
+    $normal = $wrapper->field_large_path->value();
+    $large = $wrapper->field_jumbo_path->value();
+    $section = $wrapper->field_section->value();
+    $subsection = $wrapper->field_subsection->value();
+    $image = array();
+    if($thumb) {
+      $image['thumb'] = $thumb;
+      $image['normal'] = $normal;
+      $image['large'] = $large;
+    }
+    $section_render = NULL;
+    $subsection_render = NULL;
+    if($section) {
+      $section_render = mytimes_core_render_taxonomy($section);
+    }
+    if($subsection) {
+      $subsection_render = mytimes_core_render_taxonomy($subsection);
+    }
+
+    //form a result object
+    $result = array(
+      'nid' => $nid,
+      'title' => $title,
+      'path' => $path,
+      'author' => $author,
+      'body' => $body,
+      'date' => $date,
+      'image' => $image,
+      'section' => array(
+        'rendered' =>$section_render,
+        'details' => $section
+      ),
+      'subsection' => array(
+        'rendered' => $subsection_render,
+        'details' => $subsection
+      )
+    );
+  } else {
+    //there is no result.
+    $result = FALSE;
+  }
+  return $result;
+}
+
+function mytimes_core_render_taxonomy($term_obj) {
+  $tid = $term_obj->tid;
+  $calc_path = "taxonomy/term/" . $tid;
+  $path = drupal_lookup_path('alias', $calc_path);
+  $name = $term_obj->name;
+
+  $output = "<a href='/" . $path . "'>" . $name . "</a>";
+  return $output;
+}
+
 function mytimes_core_create_articles($argument) {
   //get article data
   $url = "http://api.nytimes.com/svc/news/v3/content/nyt/all?";
@@ -106,16 +170,6 @@ function mytimes_core_create_articles($argument) {
       }
       $item_tid = mytimes_core_get_term('item_type',$result['item_type']);
       $material_tid = mytimes_core_get_term('material_type_facet',$result['material_type_facet']);
-
-      $socket_update = array(
-        'title' => $result['title'],
-        'url' => $result['url'],
-        'subhead' => $result['subheadline'],
-        'kicker' => $result['kicker'],
-        'datePublished' => $dateObj->getTimestamp()
-      );
-      $socket_subject = "new_post";
-      $socket_update = drupal_json_encode($socket_update);
       
       //set values on the wrapper
       $wrapper->field_section->set($section_tid);
@@ -143,6 +197,11 @@ function mytimes_core_create_articles($argument) {
         //no other actions now.
       }
       $wrapper->save();
+
+      //take care of socket data.
+      $socket_update = mytimes_core_prepare_article_data($wrapper);
+      $socket_subject = "new_post";
+      $socket_update = drupal_json_encode($socket_update);
       nodejs_broadcast_message($socket_subject,$socket_update);
     } else {
       //don't do anything.

@@ -44,18 +44,25 @@
 
       return r;
     }
-    $(document).ready(function() {
+    $(document).ready(function () {
+      (function showWelcome() {
+        var welcomeString = "      __       __            ________  __\n     /  \\     /  |          /        |/  |\n     ##  \\   /## | __    __ ########/ ##/  _____  ____    ______    _______\n     ###  \\ /### |/  |  /  |   ## |   /  |/     \\/    \\  /      \\  /       |\n     ####  /#### |## |  ## |   ## |   ## |###### ####  |/######  |/#######/\n     ## ## ##/## |## |  ## |   ## |   ## |## | ## | ## |##    ## |##      \\\n     ## |###/ ## |## \\__## |   ## |   ## |## | ## | ## |########/  ######  |\n     ## | #/  ## |##    ## |   ## |   ## |## | ## | ## |##       |/     ##/\n     ##/      ##/  ####### |   ##/    ##/ ##/  ##/  ##/  #######/ #######/\n                  /  \\__## |\n                  ##    ##/\n                   ######/";
+        welcomeString += "\n\nMyTimes live updates powered by Node.js and socket.io. Backend article aggregation powered by Drupal.";
+        welcomeString += "\nCheck out the repo at github.com/isaacwhite/mytimes.";
+        console.log(welcomeString);
+      })();
       var socket = Drupal.Nodejs.socket;
-      socket.on("message", function(data) {
+      socket.on("message", function (data) {
         var type = data.data.subject,
             messageData = JSON.parse(data.data.body),
             itemString;
         if(type === "new_post") {
+          console.log("New post received via websockets");
           itemString = renderItem(messageData);
-        }
-        //we assume it is the most recent item.
-        $(".view-content article").last().remove();
-        $(".view-content").prepend(itemString);
+          //we assume it is the most recent item.
+          $(".view-content article").last().remove();
+          $(".view-content").prepend(itemString);
+        } //next we should check for item updates.
       });
     });
 })(jQuery);

@@ -50,3 +50,37 @@ img {
 	width: 100%;
 	height: auto;
 }
+.iframe-background {
+	position: fixed;
+	top:0;
+	left:0;
+	width: 100%;
+	height: 100%;
+	z-index: 2;
+	background-color: black;
+	opacity: .9;
+}
+
+.article-window {
+	background-color: white;
+	z-index: 3;
+	position: fixed;
+	top: 5%;
+	width: 70%;
+	height: 90%;
+}
+.close-iframe {
+	width: 3rem;
+	height: 3rem;
+	line-height: 3rem;
+	text-align: center;
+	@include webfont(gotham,light,normal);
+	color: white;
+	background-color: $nyt-blue;
+	right: 10%;
+	top: 5%;
+	position: fixed;
+	z-index: 100;
+	text-decoration: none;
+	@include border-radius(3px);
+}

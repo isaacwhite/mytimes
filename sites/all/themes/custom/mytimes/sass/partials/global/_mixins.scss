@@ -3,7 +3,7 @@
 //
 // All of your mixins should go in this file.
 ////////////////////////
-
+@import "compass/css3/border-radius";
 @mixin webfont($family,$weight,$italic) {
 	@if $family == gotham  {
 		font-family: 'Gotham SSm A', 'Gotham SSm B', arial, sans-serif;

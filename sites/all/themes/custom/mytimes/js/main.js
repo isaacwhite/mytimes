@@ -14,7 +14,7 @@
               rs += "<h6>" + rendered + "</h6>";
               break;
             case "image":
-              rs += "<a class='img-link' target='_blank' href='" + path +"'>";
+              rs += "<a class='img-link article-view' target='_blank' href='" + path +"'>";
               rs += "<img class='thumbnail' onerror='this.style.display=";
               rs += "\"none\"' src='" + rendered.normal + "'></a>";
               break;
@@ -38,7 +38,7 @@
       r =  "<article data-nid='" + nid + "' data-updated='" + date + "'>";
       r += "<header>" + printCond(section,"section");
       r += printCond(subsection,"subsection") + "</header>";
-      r += "<h2><a target='_blank' href='" + path + "' rel='bookmark'>";
+      r += "<h2><a target='_blank' class='article-view' href='" + path + "' rel='bookmark'>";
       r += title + "</a></h2>" + printCond(author,"author");
       r += printCond(image,"image",path) + "<p>" + body + "</p></article>";
 
@@ -51,6 +51,7 @@
         welcomeString += "\nCheck out the repo at github.com/isaacwhite/mytimes.";
         console.log(welcomeString);
       })();
+      //setup sockets.
       var socket = Drupal.Nodejs.socket;
       socket.on("message", function (data) {
         var type = data.data.subject,
@@ -71,5 +72,28 @@
           console.log("replaced item with nid=" + nid);
         }//next we should try to revaluate the sort when items are added to be safe.
       });
+      $("body").bind("click",function(e) {
+        var that = this;
+        e.preventDefault();
+        if($(e.srcElement).hasClass("article-view")) {
+          var url = e.srcElement.href;
+          var width = $(document).width();
+          var left = width * 0.15;
+          $(this).css({overflow:"hidden"});
+          var iframeString = "<iframe class='article-window' src='" + url +"'></iframe><div class='iframe-background'></div>";
+          var closeButton = "<a class='close-iframe' href='#'>x</a>";
+          $("body").append(iframeString);
+          $("body").append(closeButton);
+          $(".article-window").css({left:left + "px"});
+          //process opening of window
+        } else if ($(e.srcElement).hasClass("close-iframe")) {
+          $(e.srcElement).remove();
+          $(".article-window,.iframe-background").animate({opacity:0},300,function() {
+            $(this).remove();
+            $(that).css({overflow:"initial"});
+          });
+        }
+      });
+
     });
 })(jQuery);

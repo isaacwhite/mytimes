@@ -18,7 +18,7 @@ settings[aurora_min_ie_support] = 9
 
 ; Miscelaneous Options
 settings[aurora_html_tags] = 1
-settings[aurora_typekit_id] =
+;settings[aurora_typekit_id] =
 ; Information added by drupal.org packaging script on 2013-10-10
 version = "7.x-3.2"
 core = "7.x"

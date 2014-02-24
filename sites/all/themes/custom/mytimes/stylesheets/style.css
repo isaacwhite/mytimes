@@ -234,7 +234,7 @@ table {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Mercury SSm A', 'Mercury SSm B', georgia, serif;
-  font-weight: 600;
+  font-weight: 500;
   font-style: italic;
 }
 h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
@@ -247,13 +247,14 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
 }
 
 * {
-  line-height: 1.4;
+  line-height: 1.4375;
 }
 
 p {
   font-family: 'Mercury SSm A', 'Mercury SSm B', georgia, serif;
   font-weight: 400;
   font-style: normal;
+  font-size: 0.9375rem;
   max-width: 30em;
 }
 

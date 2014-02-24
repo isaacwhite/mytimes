@@ -70,7 +70,6 @@
 <?php if ($page['header']): ?>
   <header id="header" role="banner">
     <?php print render($page['header']); ?>
-    <link rel="stylesheet" type="text/css" href="//cloud.typography.com/6164632/733342/css/fonts.css" />
   </header>
 <?php endif; ?>
 

@@ -29,6 +29,14 @@ function mytimes_preprocess_maintenance_page(&$vars) {
 function mytimes_modernizr_load_alter(&$load) {
 
 }
+function MODULENAME_page_alter() {
+  $attributes = array( // Set up an array of attributes inside the tag
+    'href' => '//cloud.typography.com/[CUSTOM PATH]/fonts.css',
+    'rel' => 'stylesheet',
+    'type' => 'text/css',
+  );
+  drupal_add_html_head_link($attributes);
+}
 
 /**
  * Implements hook_preprocess_html()
@@ -47,9 +55,13 @@ function mytimes_preprocess_html(&$vars) {
  * @param $vars
  *   An array of variables to pass to the theme template.
  */
-/* -- Delete this line if you want to use this function
 function mytimes_preprocess_page(&$vars) {
-
+  $attributes = array( // Set up an array of attributes inside the tag
+    'href' => '//cloud.typography.com/6164632/733342/css/fonts.css',
+    'rel' => 'stylesheet',
+    'type' => 'text/css',
+  );
+  drupal_add_html_head_link($attributes);
 }
 
 /**
@@ -94,7 +106,6 @@ function mytimes_preprocess_entity(&$vars) {
  * @param $vars
  *   An array of variables to pass to the theme template.
  */
- // -- Delete this line if you want to use this function
 function mytimes_preprocess_node(&$vars) {
   $node = $vars['node'];
   if ($vars['view_mode'] == 'teaser') {

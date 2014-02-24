@@ -131,7 +131,6 @@ function mytimes_core_create_articles($argument) {
     $query->entityCondition('entity_type','node')
         ->entityCondition('bundle','article')
         ->propertyCondition('title',$title);
-        // ->fieldCondition('field_date_published','value',$dateObj->getTimestamp(),'=');
     $query_result = $query->execute();
     if(empty($query_result)) {
       //go for it.
@@ -149,14 +148,32 @@ function mytimes_core_create_articles($argument) {
         $basicLarge = $calc_path . $base_name . "-sfSpan.jpg";
         $thumbLarge = $calc_path . $base_name . "-thumbLarge.jpg";
       }
-      $values = array(
-        'type' => 'article',
-        'uid' => 1,
-        'status' => 1,
-        'comment' => 0,
-        'promote' => 0,
-      );
-      $entity = entity_create('node', $values);
+      //before we get a wrapper, let's check for the same url existing already.
+      $url = $result['url'];
+      $query = new EntityFieldQuery();
+      $query->entityCondition('entity_type','node')
+          ->entityCondition('bundle','article')
+          ->fieldCondition('field_source_url','value',$url,'=');
+      $query_result = $query->execute();
+      if(empty($query_result)) {
+        $values = array(
+          'type' => 'article',
+          'uid' => 1,
+          'status' => 1,
+          'comment' => 0,
+          'promote' => 0,
+        );
+        $update = FALSE;
+        $entity = entity_create('node', $values);
+      } else {
+        $update = TRUE; //we're going to update an existing article
+        $items = $query_result['node'];
+        foreach($items as $key => $item_in_result) {
+          $entity = $key;
+          break 1;//let's try this instead. I hope there's only one.
+        }
+      }
+      //we're going to replace all contents, so we can continue as if it were new at this point.
       $wrapper = entity_metadata_wrapper('node', $entity);
       //preprocess tids
       $section_tid = mytimes_core_get_term('section',$result['section']);
@@ -202,7 +219,11 @@ function mytimes_core_create_articles($argument) {
       //take care of socket data.
       //since we're going backwards through the items, we should encounter older stuff first (we hope)
       $socket_update = mytimes_core_prepare_article_data($wrapper);
-      $socket_subject = "new_post";
+      if(!$update) {
+        $socket_subject = "new_post";
+      } else {
+        $socket_subject = "post_revision";
+      }
       $socket_update = drupal_json_encode($socket_update);
       nodejs_broadcast_message($socket_subject,$socket_update);
     } else {

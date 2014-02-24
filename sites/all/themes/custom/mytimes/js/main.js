@@ -62,7 +62,14 @@
           //we assume it is the most recent item.
           $(".view-content article").last().remove();
           $(".view-content").prepend(itemString);
-        } //next we should check for item updates.
+        } else if (type === "post_revision") {
+          console.log("received update to existing post!");
+          itemString = renderItem(messageData); //we're going to replace the existing item with the updated one.
+          var nid = messageData.nid;
+          var toUpdate = $(".view-content").find("[data-nid='" + nid + "']");
+          $(toUpdate).replaceWith(itemString);
+          console.log("replaced item with nid=" + nid);
+        }//next we should try to revaluate the sort when items are added to be safe.
       });
     });
 })(jQuery);

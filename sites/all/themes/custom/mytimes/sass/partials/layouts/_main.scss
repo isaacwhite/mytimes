@@ -27,6 +27,7 @@ h6 {
     float: left;
     &.updated {
       @include webfont(gotham,medium,normal);
+      color: white * 0.3;
       margin-left: 0.5rem;
       font-size: 0.5rem;
       padding-top: 4px;
@@ -37,7 +38,6 @@ h6 {
   }
   &.no-author div.updated {
     @include webfont(gotham,book,normal);
-    color: white * 0.2;
     margin-left: 0;
     padding-top: 0;
     font-size: 0.75rem;

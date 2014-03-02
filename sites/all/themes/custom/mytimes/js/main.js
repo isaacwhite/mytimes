@@ -103,9 +103,11 @@
           var toUpdate = $(".view-content").find("[data-nid='" + nid + "']");
           $(toUpdate).replaceWith(itemString);
           console.log("replaced item with nid=" + nid);
+        } else if (type === "finished_push") {
+          //this is the end of the most recent update.
+          runAllUpdates(); //only update at the end of a messages push
         }//next we should try to revaluate the sort when items are added to be safe.
         //whenever we get a new message, we must update elements again.
-        clearIntervalsAndAttach();
       });
     } catch(e) {
       console.log("failure with socket updates");

@@ -137,6 +137,7 @@ function mytimes_core_create_articles($argument) {
   $request_path = $url . $api_string;
   $returned_json = file_get_contents($request_path);
   $results = drupal_json_decode($returned_json);
+  $incoming = FALSE;
 
   $oldestFirst = array_reverse($results['results']);
   //loop over the results
@@ -157,6 +158,7 @@ function mytimes_core_create_articles($argument) {
     $query_result = $query->execute();
     if(empty($query_result)) {
       //go for it.
+      $incoming = TRUE; //we're going to send something
       if(!empty($multimedia)) {
         $image_path = $multimedia[0]['url'];
         $components = explode("/",$image_path);
@@ -252,6 +254,10 @@ function mytimes_core_create_articles($argument) {
     } else {
       //don't do anything.
     }
+  }
+  if($incoming) {
+    $update_subj = "finished_push";
+    nodejs_broadcast_message($update_subj,"true");
   }
   //end of loop
   //create the nodes

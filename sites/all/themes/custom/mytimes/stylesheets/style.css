@@ -294,6 +294,7 @@ h6 div.updated {
   font-family: 'Gotham SSm A', 'Gotham SSm B', arial, sans-serif;
   font-weight: 500;
   font-style: normal;
+  color: #4c4c4c;
   margin-left: 0.5rem;
   font-size: 0.5rem;
   padding-top: 4px;
@@ -305,7 +306,6 @@ h6.no-author div.updated {
   font-family: 'Gotham SSm A', 'Gotham SSm B', arial, sans-serif;
   font-weight: 400;
   font-style: normal;
-  color: #333333;
   margin-left: 0;
   padding-top: 0;
   font-size: 0.75rem;

@@ -9,11 +9,11 @@ img, video {
   height: auto;
 }
 
-.clearfix:before, header:before, article:before, .clearfix:after, header:after, article:after {
+.clearfix:before, h6:before, header:before, article:before, .clearfix:after, h6:after, header:after, article:after {
   display: table;
   content: "";
 }
-.clearfix:after, header:after, article:after {
+.clearfix:after, h6:after, header:after, article:after {
   clear: both;
 }
 
@@ -280,12 +280,26 @@ h4 a {
 }
 
 h6 {
-  font-size: .75rem;
   font-family: 'Mercury SSm A', 'Mercury SSm B', georgia, serif;
   font-weight: 600;
   font-style: normal;
+  font-size: .75rem;
   margin-top: .75rem;
   margin-bottom: 1rem;
+}
+h6 div {
+  float: left;
+}
+h6 div.updated {
+  margin-left: 0.5rem;
+  font-family: 'Gotham SSm A', 'Gotham SSm B', arial, sans-serif;
+  font-weight: 300;
+  font-style: normal;
+  font-size: .5rem;
+  padding-top: 4px;
+}
+h6 div.updated.recent {
+  color: red;
 }
 
 h2 {

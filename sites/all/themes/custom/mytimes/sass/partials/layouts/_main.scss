@@ -17,10 +17,23 @@ h4 {
 }
 
 h6 {
-	font-size: .75rem;
 	@include webfont(mercury,semibold,normal);
+	@extend .clearfix;
+	font-size: .75rem;
 	margin-top: .75rem;
 	margin-bottom:1rem;
+	div {
+		float: left;
+		&.updated {
+			margin-left:0.5rem;
+			@include webfont(gotham,light,normal);
+			font-size: .5rem;
+			padding-top: 4px;
+			&.recent {
+				color: red;
+			}
+		}
+	}
 }
 
 header {

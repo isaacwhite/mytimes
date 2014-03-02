@@ -112,7 +112,7 @@
             recent = true;
           }
           if(result.length > 0) {
-            $(that).find("h6 .updated").contents(timeString);
+            $(that).find("h6 .updated").text(timeString);
           } else {
             $(that).find("h6").append("<div class='updated'>" +
               timeString + "</div>");

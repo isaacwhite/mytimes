@@ -30,9 +30,14 @@ h6 {
 			font-size: .5rem;
 			padding-top: 4px;
 			&.recent {
-				color: red;
+				color: $nyt-red;
 			}
 		}
+	}
+	&.no-author div.updated {
+		margin-left: 0;
+		padding-top: 0;
+		font-size: .75rem;
 	}
 }
 

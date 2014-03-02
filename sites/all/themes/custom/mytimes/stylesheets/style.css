@@ -299,7 +299,12 @@ h6 div.updated {
   padding-top: 4px;
 }
 h6 div.updated.recent {
-  color: red;
+  color: #a81817;
+}
+h6.no-author div.updated {
+  margin-left: 0;
+  padding-top: 0;
+  font-size: .75rem;
 }
 
 h2 {

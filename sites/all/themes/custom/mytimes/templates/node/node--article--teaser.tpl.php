@@ -102,9 +102,11 @@ $date = $data['date'];
 <?php endif; ?>
 </header>
 <h2><a target="_blank" class="article-view" href="<?php print $path; ?>" rel="bookmark"><?php print $title; ?></a></h2>
-<h6>
 <?php if($author): ?>
+<h6>
   <div class="author"><?php print $author; ?></div>
+<?php else: ?>
+  <h6 class="no-author">
 <?php endif;?>
 </h6>
 <?php if(!empty($image)): ?>

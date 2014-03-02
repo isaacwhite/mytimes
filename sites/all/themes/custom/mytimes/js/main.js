@@ -19,7 +19,10 @@
             rs += "\"none\"' src='" + rendered.normal + "'></a>";
             break;
         }
-      } //no else. Keep the blank string.
+      } else if (className === "author") {
+        //we've got an empty author
+        rs += "<h6 class='no-author'></h6>";
+      }//no else. Keep the blank string.
       return rs;
     }
     var s = socketData,
@@ -86,7 +89,6 @@
     //set up an interval check every minute.
     var intervalPeriod = 1000 * 60;//1 minute in milliseconds.
     var intervals = [];
-    //listen for pager events.
     function clearIntervalsAndAttach() {
       for(var i; i<intervals.length; i++) {
         clearInterval(intervals[i]); //clear the intervals
@@ -94,12 +96,6 @@
       intervals = [];
       attachDateUpdates();
     }
-
-    $(document).ajaxComplete(function() {
-      clearIntervalsAndAttach() //call the dates again.
-       // fired after the AHAH is completed
-    });
-
     function attachDateUpdates() {
       $(".view-articles-on-nytimes-com article").each(function() {
         var that = this;
@@ -116,10 +112,8 @@
             recent = true;
           }
           if(result.length > 0) {
-            console.log("already exists");
             $(that).find("h6 .updated").contents(timeString);
           } else {
-            console.log("doesn't exist");
             $(that).find("h6").append("<div class='updated'>" +
               timeString + "</div>");
             result = $(that).find("h6 .updated");
@@ -135,6 +129,11 @@
         intervals.push(setInterval(update,intervalPeriod));
       });
     }
+
+    //listener for pager events
+    $(document).ajaxComplete(function() {
+      clearIntervalsAndAttach(); //call the dates again.
+    });
 
     //call attachDateUpdates on load
     attachDateUpdates();

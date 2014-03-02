@@ -1,0 +1,6 @@
+[21-Feb-2014 22:43:01 America/Denver] PHP Warning:  include_once(/home/isaacwhi/public_html/mytimes/includes/bootstrap.inc): failed to open stream: Permission denied in /home/isaacwhi/public_html/mytimes/cron.php on line 13
+[21-Feb-2014 22:43:01 America/Denver] PHP Warning:  include_once(): Failed opening '/home/isaacwhi/public_html/mytimes/includes/bootstrap.inc' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/isaacwhi/public_html/mytimes/cron.php on line 13
+[21-Feb-2014 22:43:01 America/Denver] PHP Fatal error:  Call to undefined function drupal_bootstrap() in /home/isaacwhi/public_html/mytimes/cron.php on line 14
+[21-Feb-2014 22:44:01 America/Denver] PHP Warning:  include_once(/home/isaacwhi/public_html/mytimes/includes/bootstrap.inc): failed to open stream: Permission denied in /home/isaacwhi/public_html/mytimes/cron.php on line 13
+[21-Feb-2014 22:44:01 America/Denver] PHP Warning:  include_once(): Failed opening '/home/isaacwhi/public_html/mytimes/includes/bootstrap.inc' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/isaacwhi/public_html/mytimes/cron.php on line 13
+[21-Feb-2014 22:44:01 America/Denver] PHP Fatal error:  Call to undefined function drupal_bootstrap() in /home/isaacwhi/public_html/mytimes/cron.php on line 14

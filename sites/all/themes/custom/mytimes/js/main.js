@@ -74,6 +74,8 @@
           $(toUpdate).replaceWith(itemString);
           console.log("replaced item with nid=" + nid);
         }//next we should try to revaluate the sort when items are added to be safe.
+        //whenever we get a new message, we must update elements again.
+        clearIntervalsAndAttach();
       });
     } catch(e) {
       console.log("failure with socket updates");
@@ -83,37 +85,60 @@
     //TIMING
     //set up an interval check every minute.
     var intervalPeriod = 1000 * 60;//1 minute in milliseconds.
-    $(".view-articles-on-nytimes-com article").each(function() {
-      var that = this;
-      setInterval(function() {
-        var unixString, timeString, result, currentTime, unix3Hrs, recent;
-        unixString = $(that).data("updated");
-        timeString = moment(unixString,"X").fromNow();
-        result = $(that).find("h6 .updated");
-        currentTime = moment().format("X");
-        unix3Hrs = 60 * 3;
-        recent = false;
-        //3 hours, in unix time.
-        if(currentTime - unixString < unix3Hrs) {
-          recent = true;
-        }
-        if(result.length > 0) {
-          console.log("already exists");
-          $(that).find("h6 .updated").contents(timeString);
-        } else {
-          console.log("doesn't exist");
-          $(that).find("h6").append("<div class='updated'>" +
-            timeString + "</div>");
-          result = $(that).find("h6 .updated");
-        }
-        if(recent && !$(result).hasClass("recent")) {
-          $(that).find("h6 .updated").addClass("recent");
-        }
-        if(!recent && $(result).hasClass("recent")) {
-          $(that).find("h6 .updated").removeClass("recent");
-        }
-      },intervalPeriod);
+    var intervals = [];
+    //listen for pager events.
+    function clearIntervalsAndAttach() {
+      for(var i; i<intervals.length; i++) {
+        clearInterval(intervals[i]); //clear the intervals
+      }
+      intervals = [];
+      attachDateUpdates();
+    }
+
+    $(document).ajaxComplete(function() {
+      clearIntervalsAndAttach() //call the dates again.
+       // fired after the AHAH is completed
     });
+
+    function attachDateUpdates() {
+      $(".view-articles-on-nytimes-com article").each(function() {
+        var that = this;
+        function update() {
+          var unixString, timeString, result, currentTime, unix3Hrs, recent;
+          unixString = $(that).data("updated");
+          timeString = moment(unixString,"X").fromNow();
+          result = $(that).find("h6 .updated");
+          currentTime = moment().format("X");
+          unix3Hrs = 60 * 3;
+          recent = false;
+          //3 hours, in unix time.
+          if(currentTime - unixString < unix3Hrs) {
+            recent = true;
+          }
+          if(result.length > 0) {
+            console.log("already exists");
+            $(that).find("h6 .updated").contents(timeString);
+          } else {
+            console.log("doesn't exist");
+            $(that).find("h6").append("<div class='updated'>" +
+              timeString + "</div>");
+            result = $(that).find("h6 .updated");
+          }
+          if(recent && !$(result).hasClass("recent")) {
+            $(that).find("h6 .updated").addClass("recent");
+          }
+          if(!recent && $(result).hasClass("recent")) {
+            $(that).find("h6 .updated").removeClass("recent");
+          }
+        }
+        update();
+        intervals.push(setInterval(update,intervalPeriod));
+      });
+    }
+
+    //call attachDateUpdates on load
+    attachDateUpdates();
+ 
     //CLICK HANDLERS
     //ARTICLE CLICK HANDLER
     $("body").on("click","a.article-view",function(e) {

@@ -19,8 +19,7 @@
               rs += "\"none\"' src='" + rendered.normal + "'></a>";
               break;
           }
-        } //no else. Keep the blank string. 
-
+        } //no else. Keep the blank string.
         return rs;
       }
       var s = socketData,
@@ -72,27 +71,27 @@
           console.log("replaced item with nid=" + nid);
         }//next we should try to revaluate the sort when items are added to be safe.
       });
-      $("body").bind("click",function(e) {
-        var that = this;
+      $("body").on("click","a.article-view",function(e) {
         e.preventDefault();
-        if($(e.srcElement).hasClass("article-view")) {
-          var url = e.srcElement.href;
-          var width = $(document).width();
-          var left = width * 0.15;
-          $(this).css({overflow:"hidden"});
-          var iframeString = "<iframe class='article-window' src='" + url +"'></iframe><div class='iframe-background'></div>";
-          var closeButton = "<a class='close-iframe' href='#'>x</a>";
-          $("body").append(iframeString);
-          $("body").append(closeButton);
-          $(".article-window").css({left:left + "px"});
+        console.log(e);
+        var url = e.currentTarget.href;
+        var width = $(document).width();
+        var left = width * 0.15;
+        $(this).css({overflow:"hidden"});
+        var iframeString = "<iframe class='article-window' src='" + url +"'></iframe><div class='iframe-background'></div>";
+        var closeButton = "<a class='close-iframe' href='#'>x</a>";
+        $("body").append(iframeString);
+        $("body").append(closeButton);
+        $(".article-window").css({left:left + "px"});
           //process opening of window
-        } else if ($(e.srcElement).hasClass("close-iframe")) {
-          $(e.srcElement).remove();
-          $(".article-window,.iframe-background").animate({opacity:0},300,function() {
-            $(this).remove();
-            $(that).css({overflow:"initial"});
-          });
-        }
+      });
+      $("body").on("click","a.close-iframe",function(e) {
+        e.preventDefault();
+        $(e.srcElement).remove();
+        $(".article-window,.iframe-background").animate({opacity:0},300,function() {
+          $(this).remove();
+          $(that).css({overflow:"initial"});
+        });
       });
 
     });

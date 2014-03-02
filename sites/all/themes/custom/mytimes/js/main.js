@@ -11,7 +11,7 @@
             rs += rendered + "</h4>";
             break;
           case "author":
-            rs += "<h6><div class='updated'>" + rendered + "</div></h6>";
+            rs += "<h6><div class='author'>" + rendered + "</div></h6>";
             break;
           case "image":
             rs += "<a class='img-link article-view' target='_blank' href='" + path +"'>";
@@ -105,7 +105,7 @@
           timeString = moment(unixString,"X").fromNow();
           result = $(that).find("h6 .updated");
           currentTime = moment().format("X");
-          unix3Hrs = 60 * 3;
+          unix3Hrs = 60 * 60 * 2.5; //2.5 hours
           recent = false;
           //3 hours, in unix time.
           if(currentTime - unixString < unix3Hrs) {

@@ -12,24 +12,48 @@
  * Implements hook menu
  * Provides two json endpoints :D
  */
-// function mytimes_core_menu() {
-//   $items['set/%'] = array(
-//     'page callback' => 'rheo_core_set_data',
-//     'page arguments' => array(1),
-//     'access arguments' => array('access content')
-//   );
-//   return $items;
-// }
+function mytimes_core_menu() {
+  $items['get/homepage'] = array(
+    'page callback' => 'mytimes_core_get_more',
+    'access arguments' => array('access content')
+  );
+  return $items;
+}
 
-// function mytimes_core_set_data($request) {
-//   $name = "Access-Control-Allow-Origin";
-//   $value = "http://rheomail.com";
-//   drupal_add_http_header($name, $value, $append = TRUE);
-//   // $client_ip = $_SERVER['REMOTE_ADDR'];
-//   // dpm($client_ip);
-//   //no switch statement
-//   dpm($_POST);
-// }
+function getBaseQuery() {
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type','node')
+    ->entityCondition('bundle','article')
+    ->propertyCondition('status',1)
+    ->fieldOrderBy('field_date_published','value','DESC');
+  return $query;
+
+}
+function mytimes_core_get_more() {
+  if($_GET['page']) {
+    $page = $_GET['page'];
+  } else {
+    $page = 1;
+  }
+  $start = $page * 20;
+  $length = 20;
+  // //let's just skip interacting with the view. It will probably take too long anyway.
+  $count = getBaseQuery()->count()->execute();
+  $query = getBaseQuery()->range($start,$length);
+  $result = $query->execute();
+  $preppedObjs = array();
+  if(isset($result['node'])) {
+    foreach($result['node'] as $item) {
+      $wrapper = entity_metadata_wrapper('node',$item->nid);
+      $preppedObjs[] = mytimes_core_prepare_article_data($wrapper);
+    }
+  }
+  $jsonObj = array(
+    'count' => $count,
+    'result' => $preppedObjs
+  );
+  drupal_json_output($jsonObj);
+}
 
 
 function mytimes_core_cronapi($op,$job = NULL) {
@@ -113,7 +137,6 @@ function mytimes_core_create_articles($argument) {
   $request_path = $url . $api_string;
   $returned_json = file_get_contents($request_path);
   $results = drupal_json_decode($returned_json);
-  // dpm($results);
 
   $oldestFirst = array_reverse($results['results']);
   //loop over the results

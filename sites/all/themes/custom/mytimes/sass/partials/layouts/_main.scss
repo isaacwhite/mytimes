@@ -1,101 +1,131 @@
 #main {
-	padding: 0 1rem;
+  padding: 0 1rem;
 }
+
 h4 {
-	@include webfont(gotham,bold,normal);
-	float: left;
-	margin-bottom: 0;
-	font-size: .75rem;
-	&.subsection {
-		margin-left: .5rem;
-		padding-left: .5rem;
-		border-left: 1px solid white * .2;
-	}
-	a {
-		color: black * 1.3;
-	}
+  @include webfont(gotham,bold,normal);
+  float: left;
+  margin-bottom: 0;
+  font-size: 0.75rem;
+  &.subsection {
+    margin-left: 0.5rem;
+    padding-left: 0.5rem;
+    border-left: 1px solid white * .2;
+  }
+  a {
+    color: black * 1.3;
+  }
 }
 
 h6 {
-	@include webfont(mercury,semibold,normal);
-	@extend .clearfix;
-	font-size: .75rem;
-	margin-top: .75rem;
-	margin-bottom:1rem;
-	div {
-		float: left;
-		&.updated {
-			margin-left:0.5rem;
-			@include webfont(gotham,light,normal);
-			font-size: .5rem;
-			padding-top: 4px;
-			&.recent {
-				color: $nyt-red;
-			}
-		}
-	}
-	&.no-author div.updated {
-		margin-left: 0;
-		padding-top: 0;
-		font-size: .75rem;
-	}
+  @include webfont(mercury,semibold,normal);
+  @extend .clearfix;
+  font-size: 0.75rem;
+  margin-top: 0.75rem;
+  margin-bottom: 1rem;
+  div {
+    float: left;
+    &.updated {
+      @include webfont(gotham,medium,normal);
+      margin-left: 0.5rem;
+      font-size: 0.5rem;
+      padding-top: 4px;
+      &.recent {
+        color: $nyt-red;
+      }
+    }
+  }
+  &.no-author div.updated {
+    @include webfont(gotham,book,normal);
+    color: white * 0.2;
+    margin-left: 0;
+    padding-top: 0;
+    font-size: 0.75rem;
+  }
 }
 
 header {
-	@extend .clearfix;
+  @extend .clearfix;
 }
 
 h2 {
-	margin-top: .5rem;
-	margin-bottom: .75rem;
+  margin-top: .5rem;
+  margin-bottom: .75rem;
 }
 
-
 article {
-	margin: 0 auto;
-	max-width: 40rem;
-	margin-bottom: 1rem;
-	padding-bottom: .5rem;
-	border-bottom: 1px solid white * .2;
-	@extend .clearfix;
+  @extend .clearfix;
+  margin: 0 auto;
+  max-width: 40rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid white * 0.2;
 }
 
 .img-link {
-	width: 30%;
-	float: right;
-	margin-left: 1rem;
+  width: 30%;
+  float: right;
+  margin-left: 1rem;
 }
+
 .iframe-background {
-	position: fixed;
-	top:0;
-	left:0;
-	width: 100%;
-	height: 100%;
-	z-index: 2;
-	background-color: black;
-	opacity: .9;
+  position: fixed;
+  top:0;
+  left:0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background-color: black;
+  opacity: .9;
 }
 
 .article-window {
-	background-color: white;
-	z-index: 3;
-	position: fixed;
-	top: 5%;
-	width: 70%;
-	height: 90%;
+  background-color: white;
+  z-index: 3;
+  position: fixed;
+  top: 5%;
+  width: 70%;
+  height: 90%;
 }
+
 .close-iframe {
-	width: 3rem;
-	height: 3rem;
-	line-height: 3rem;
-	text-align: center;
-	@include webfont(gotham,light,normal);
-	color: white;
-	background-color: $nyt-blue;
-	right: 10%;
-	top: 5%;
-	position: fixed;
-	z-index: 100;
-	text-decoration: none;
-	@include border-radius(3px);
+  @include webfont(gotham,light,normal);
+  @include border-radius(3px);
+  width: 3rem;
+  height: 3rem;
+  line-height: 3rem;
+  text-align: center;
+  color: white;
+  background-color: $nyt-blue;
+  right: 10%;
+  top: 5%;
+  position: fixed;
+  z-index: 100;
+  text-decoration: none;
+}
+.get-more h5 {
+  text-align: center;
+}
+.load-more-button {
+  @include webfont(gotham,light,normal);
+  text-align: center;
+  display: block;
+  margin: 0 auto;
+  max-width: 7rem;
+  padding: 0.5rem;
+  text-decoration: none;
+  border: 1px solid white * 0.5;
+  color: white * 0.5;
+  &:hover {
+    @include webfont(gotham,book,normal);
+    color: saturate($nyt-blue,50%);
+    border: 1px solid saturate($nyt-blue,50%);
+  }
+  &.loading,
+  &.loading:hover {
+    cursor: wait;
+    background-color: white * 0.4;
+    color: white;
+    border: 1px solid black;
+  }
 }

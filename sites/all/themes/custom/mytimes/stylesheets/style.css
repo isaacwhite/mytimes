@@ -268,11 +268,11 @@ h4 {
   font-style: normal;
   float: left;
   margin-bottom: 0;
-  font-size: .75rem;
+  font-size: 0.75rem;
 }
 h4.subsection {
-  margin-left: .5rem;
-  padding-left: .5rem;
+  margin-left: 0.5rem;
+  padding-left: 0.5rem;
   border-left: 1px solid #333333;
 }
 h4 a {
@@ -283,28 +283,32 @@ h6 {
   font-family: 'Mercury SSm A', 'Mercury SSm B', georgia, serif;
   font-weight: 600;
   font-style: normal;
-  font-size: .75rem;
-  margin-top: .75rem;
+  font-size: 0.75rem;
+  margin-top: 0.75rem;
   margin-bottom: 1rem;
 }
 h6 div {
   float: left;
 }
 h6 div.updated {
-  margin-left: 0.5rem;
   font-family: 'Gotham SSm A', 'Gotham SSm B', arial, sans-serif;
-  font-weight: 300;
+  font-weight: 500;
   font-style: normal;
-  font-size: .5rem;
+  margin-left: 0.5rem;
+  font-size: 0.5rem;
   padding-top: 4px;
 }
 h6 div.updated.recent {
   color: #a81817;
 }
 h6.no-author div.updated {
+  font-family: 'Gotham SSm A', 'Gotham SSm B', arial, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  color: #333333;
   margin-left: 0;
   padding-top: 0;
-  font-size: .75rem;
+  font-size: 0.75rem;
 }
 
 h2 {
@@ -316,7 +320,7 @@ article {
   margin: 0 auto;
   max-width: 40rem;
   margin-bottom: 1rem;
-  padding-bottom: .5rem;
+  padding-bottom: 0.5rem;
   border-bottom: 1px solid #333333;
 }
 
@@ -347,13 +351,18 @@ article {
 }
 
 .close-iframe {
+  font-family: 'Gotham SSm A', 'Gotham SSm B', arial, sans-serif;
+  font-weight: 300;
+  font-style: normal;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
   width: 3rem;
   height: 3rem;
   line-height: 3rem;
   text-align: center;
-  font-family: 'Gotham SSm A', 'Gotham SSm B', arial, sans-serif;
-  font-weight: 300;
-  font-style: normal;
   color: white;
   background-color: #4d7b9f;
   right: 10%;
@@ -361,9 +370,35 @@ article {
   position: fixed;
   z-index: 100;
   text-decoration: none;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -o-border-radius: 3px;
-  border-radius: 3px;
+}
+
+.get-more h5 {
+  text-align: center;
+}
+
+.load-more-button {
+  font-family: 'Gotham SSm A', 'Gotham SSm B', arial, sans-serif;
+  font-weight: 300;
+  font-style: normal;
+  text-align: center;
+  display: block;
+  margin: 0 auto;
+  max-width: 7rem;
+  padding: 0.5rem;
+  text-decoration: none;
+  border: 1px solid #7f7f7f;
+  color: #7f7f7f;
+}
+.load-more-button:hover {
+  font-family: 'Gotham SSm A', 'Gotham SSm B', arial, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  color: #1282da;
+  border: 1px solid #1282da;
+}
+.load-more-button.loading, .load-more-button.loading:hover {
+  cursor: wait;
+  background-color: #666666;
+  color: white;
+  border: 1px solid black;
 }

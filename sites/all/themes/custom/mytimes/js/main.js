@@ -46,6 +46,33 @@
 
     return r;
   }
+  function updateDate(toUpdate) {
+    var unixString, timeString, result, currentTime, unix3Hrs, recent;
+    unixString = $(toUpdate).data("updated");
+    timeString = moment(unixString,"X").fromNow();
+    result = $(toUpdate).find("h6 .updated");
+    currentTime = moment().format("X");
+    unix3Hrs = 60 * 60 * 2.5; //2.5 hours
+    recent = false;
+    //3 hours, in unix time.
+    if(currentTime - unixString < unix3Hrs) {
+      recent = true;
+    }
+    if(result.length > 0) {
+      $(toUpdate).find("h6 .updated").text(timeString);
+    } else {
+      $(toUpdate).find("h6").append("<div class='updated'>" +
+        timeString + "</div>");
+      result = $(toUpdate).find("h6 .updated");
+    }
+    if(recent && !$(result).hasClass("recent")) {
+      $(toUpdate).find("h6 .updated").addClass("recent");
+    }
+    if(!recent && $(result).hasClass("recent")) {
+      $(toUpdate).find("h6 .updated").removeClass("recent");
+    }
+    return toUpdate;
+  }
   $(document).ready(function () {
 
     //WELCOME MESSAGE
@@ -88,55 +115,17 @@
     //TIMING
     //set up an interval check every minute.
     var intervalPeriod = 1000 * 60;//1 minute in milliseconds.
-    var intervals = [];
-    function clearIntervalsAndAttach() {
-      for(var i; i<intervals.length; i++) {
-        clearInterval(intervals[i]); //clear the intervals
-      }
-      intervals = [];
-      attachDateUpdates();
-    }
-    function attachDateUpdates() {
+    //we'll call this function on a setInterval.
+    function runAllUpdates() {
       $(".view-articles-on-nytimes-com article").each(function() {
         var that = this;
-        function update() {
-          var unixString, timeString, result, currentTime, unix3Hrs, recent;
-          unixString = $(that).data("updated");
-          timeString = moment(unixString,"X").fromNow();
-          result = $(that).find("h6 .updated");
-          currentTime = moment().format("X");
-          unix3Hrs = 60 * 60 * 2.5; //2.5 hours
-          recent = false;
-          //3 hours, in unix time.
-          if(currentTime - unixString < unix3Hrs) {
-            recent = true;
-          }
-          if(result.length > 0) {
-            $(that).find("h6 .updated").text(timeString);
-          } else {
-            $(that).find("h6").append("<div class='updated'>" +
-              timeString + "</div>");
-            result = $(that).find("h6 .updated");
-          }
-          if(recent && !$(result).hasClass("recent")) {
-            $(that).find("h6 .updated").addClass("recent");
-          }
-          if(!recent && $(result).hasClass("recent")) {
-            $(that).find("h6 .updated").removeClass("recent");
-          }
-        }
-        update();
-        intervals.push(setInterval(update,intervalPeriod));
+        updateDate(that);
       });
     }
-
-    //listener for pager events
-    $(document).ajaxComplete(function() {
-      clearIntervalsAndAttach(); //call the dates again.
-    });
-
-    //call attachDateUpdates on load
-    attachDateUpdates();
+    //run once
+    runAllUpdates();
+    //set an interval for next time.
+    setInterval(runAllUpdates,intervalPeriod);
  
     //CLICK HANDLERS
     //ARTICLE CLICK HANDLER
@@ -147,7 +136,8 @@
       var width = $(document).width();
       var left = width * 0.15;
       $(this).css({overflow:"hidden"});
-      var iframeString = "<iframe class='article-window' src='" + url +"'></iframe><div class='iframe-background'></div>";
+      var iframeString = "<iframe class='article-window' src='" + url +
+        "'></iframe><div class='iframe-background'></div>";
       var closeButton = "<a class='close-iframe' href='#'>x</a>";
       $("body").append(iframeString);
       $("body").append(closeButton);
@@ -163,6 +153,43 @@
         $(this).remove();
         $("body").css({overflow:"initial"});
       });
+    });
+
+    //load more pager
+    $("body").on("click","a.load-more-button",function(e) {
+      var that, requestPage, currentlyViewing;
+      that = this;
+      e.preventDefault();
+      if(!$(this).hasClass("loading")) {
+        requestPage = $(this).data("current-page") + 1;
+        $(this).addClass("loading");
+        currentlyViewing = $(".get-more").find(".current-range");
+        $.getJSON("/get/homepage?page=" + requestPage, function(data) {
+          var i,newStuff,count, countText;
+          count = data.count;
+          countText = "Currently showing most recent " + (requestPage + 1) * 20;
+          countText += " of " + count + " articles.";
+          data = data.result;
+          newStuff = "";
+          for(i = 0; i < data.length; i++) {
+            newStuff += renderItem(data[i]);
+          }
+          $(".view-content").append(newStuff);
+          runAllUpdates();
+          if(currentlyViewing.length === 0) {
+            currentlyViewing = "<h5 class='current-range'>" + countText + "</h5>";
+            $(".get-more").prepend(currentlyViewing); //add it
+          } else {
+            currentlyViewing.text(countText); //update in place
+          }
+          $(that).data("current-page",requestPage);
+          $(that).removeClass("loading");
+          console.log(count);
+          console.log(currentlyViewing);
+        });
+      } //no else, let css take care of styling changes while loading.
+      console.log(e);
+      console.log(requestPage);
     });
   });
 })(jQuery);

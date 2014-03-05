@@ -135,14 +135,18 @@
       e.preventDefault();
       var url = e.currentTarget.href;
       var width = $(document).width();
-      var left = width * 0.15;
-      $(this).css({overflow:"hidden"});
-      var iframeString = "<iframe class='article-window' src='" + url +
-        "'></iframe><div class='iframe-background'></div>";
-      var closeButton = "<a class='close-iframe' href='#'>x</a>";
-      $("body").append(iframeString);
-      $("body").append(closeButton);
-      $(".article-window").css({left:left + "px"});
+      if(width>1200) {
+        var left = width * 0.15;
+        $(this).css({overflow:"hidden"});
+        var iframeString = "<iframe class='article-window' src='" + url +
+          "'></iframe><div class='iframe-background'></div>";
+        var closeButton = "<a class='close-iframe' href='#'>x</a>";
+        $("body").append(iframeString);
+        $("body").append(closeButton);
+        $(".article-window").css({left:left + "px"});
+      } else {
+        window.open(url,"_blank");//open in new window when window is too small.
+      }
         //process opening of window
     });
 

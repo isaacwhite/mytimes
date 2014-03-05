@@ -101,7 +101,7 @@ $date = $data['date'];
   <h4 class="subsection"><?php print $subsection; ?></h4>
 <?php endif; ?>
 </header>
-<h2><a target="_blank" class="article-view" href="<?php print $path; ?>" rel="bookmark"><?php print $title; ?></a></h2>
+<h2><a class="article-view" href="<?php print $path; ?>" rel="bookmark"><?php print $title; ?></a></h2>
 <?php if($author): ?>
 <h6>
   <div class="author"><?php print $author; ?></div>

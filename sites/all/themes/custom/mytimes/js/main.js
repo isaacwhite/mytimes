@@ -14,7 +14,7 @@
             rs += "<h6><div class='author'>" + rendered + "</div></h6>";
             break;
           case "image":
-            rs += "<a class='img-link article-view' target='_blank' href='" + path +"'>";
+            rs += "<a class='img-link article-view' href='" + path +"'>";
             rs += "<img class='thumbnail' onerror='this.style.display=";
             rs += "\"none\"' src='" + rendered.normal + "'></a>";
             break;
@@ -133,7 +133,6 @@
     //ARTICLE CLICK HANDLER
     $("body").on("click","a.article-view",function(e) {
       e.preventDefault();
-      console.log(e);
       var url = e.currentTarget.href;
       var width = $(document).width();
       var left = width * 0.15;

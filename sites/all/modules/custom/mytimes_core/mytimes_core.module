@@ -105,7 +105,7 @@ function mytimes_core_prepare_article_data($wrapper) {
       'date' => $date,
       'image' => $image,
       'section' => array(
-        'rendered' =>$section_render,
+        'rendered' => $section_render,
         'details' => $section
       ),
       'subsection' => array(

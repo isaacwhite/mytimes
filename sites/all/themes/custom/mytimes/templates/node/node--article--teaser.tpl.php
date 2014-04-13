@@ -78,7 +78,7 @@
  * @see template_process()
  */
 ?>
-<?
+<?php
 //prep values for template
 $wrapper = entity_metadata_wrapper('node',$node);
 $data = mytimes_core_prepare_article_data($wrapper);
@@ -90,7 +90,6 @@ $author = $data['author'];
 $image = $data['image'];
 $body = $data['body'];
 $date = $data['date'];
-
 //here comes the template...
 ?>
 <article data-nid="<?php print $node->nid;?>" data-updated="<?php print $date;?>">

@@ -73,6 +73,7 @@
     }
     return toUpdate;
   }
+
   $(document).ready(function () {
 
     //WELCOME MESSAGE
@@ -112,6 +113,7 @@
     } catch(e) {
       console.log("failure with socket updates");
       console.log(e);
+      //maybe have some kind of an alert message here to indicate sockets not working at the top of the page?
     }
 
     //TIMING
@@ -162,7 +164,7 @@
 
     //load more pager
     $("body").on("click","a.load-more-button",function(e) {
-      var that, requestPage, currentlyViewing;
+      var that, requestPage, currentlyViewing, showCount;
       that = this;
       e.preventDefault();
       if(!$(this).hasClass("loading")) {
@@ -171,8 +173,9 @@
         currentlyViewing = $(".get-more").find(".current-range");
         $.getJSON("/get/homepage?page=" + requestPage, function(data) {
           var i,newStuff,count, countText;
-          count = data.count;
-          countText = "Currently showing most recent " + (requestPage + 1) * 20;
+          count = Number(data.count).toLocaleString('en');
+          showCount = Number((requestPage + 1) * 20).toLocaleString('en');
+          countText = "Currently showing most recent " + showCount;
           countText += " of " + count + " articles.";
           data = data.result;
           newStuff = "";
@@ -189,12 +192,10 @@
           }
           $(that).data("current-page",requestPage);
           $(that).removeClass("loading");
-          console.log(count);
-          console.log(currentlyViewing);
         });
       } //no else, let css take care of styling changes while loading.
-      console.log(e);
-      console.log(requestPage);
+      // console.log(e);
+      // console.log(requestPage);
     });
   });
 })(jQuery);
